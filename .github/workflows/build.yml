@@ -51,6 +51,7 @@ jobs:
           '    "geopandas",',
           '    "shapely",',
           '    "fiona",',
+          '    "fiona._shim",',
           '    "pyproj",',
           '    "plotly",',
           '    "numpy",',
