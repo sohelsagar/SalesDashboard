@@ -24,7 +24,7 @@ jobs:
     
     # ----------------------------------------------------------------------
     # FIX: This step now builds the .spec file line-by-line to avoid
-    # YAML parsing errors caused by the PowerShell Here-String syntax.
+    # YAML parsing errors and uses the correct PyInstaller 6.x import path.
     # ----------------------------------------------------------------------
     - name: Create PyInstaller spec file
       run: |
@@ -36,7 +36,8 @@ jobs:
           '# -*- mode: python ; coding: utf-8 -*-',
           'import sys',
           'from PyInstaller.utils.hooks import collect_all, collect_submodules',
-          'from PyInstaller.utils.analysis import Analysis',
+          # --- THIS IS THE CORRECTED LINE ---
+          'from PyInstaller import Analysis',
           'from PyInstaller.utils.collect import PYZ',
           'from PyInstaller.utils.collect import EXE',
           'block_cipher = None',
