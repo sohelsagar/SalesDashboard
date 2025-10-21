@@ -1,42 +1,38 @@
 name: Build Windows Executable
+
 on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
+
 jobs:
   build-windows:
     runs-on: windows-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    
+
     - name: Setup Python 3.10
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pyinstaller==6.3.0
+        pip install chart-studio
         pip install -r requirements.txt
-    
-    # ----------------------------------------------------------------------
-    # FIX: This step now builds the .spec file line-by-line to avoid
-    # YAML parsing errors and uses the correct, explicit PyInstaller 6.x import path.
-    # ----------------------------------------------------------------------
+
     - name: Create PyInstaller spec file
       run: |
-        # Create or overwrite the spec file
         New-Item -Path 'SalesDashboard.spec' -ItemType File -Force
-        
-        # Define the content for the spec file
+
         $specContent = @(
           '# -*- mode: python ; coding: utf-8 -*-',
           'import sys',
           'from PyInstaller.utils.hooks import collect_all, collect_submodules',
-          # --- THIS IS THE CORRECTED LINE ---
           'from PyInstaller.building.build_main import Analysis, PYZ, EXE',
           'block_cipher = None',
           '',
@@ -53,7 +49,7 @@ jobs:
           '    "fiona",',
           '    "fiona._shim",',
           '    "pyproj",',
-          '    "plotly",',
+          '    "chart_studio.plotly",',
           '    "numpy",',
           '    "altair",',
           '    "tornado",',
@@ -66,7 +62,7 @@ jobs:
           'hiddenimports += tmp_ret[2]',
           '',
           '# Collect other packages',
-          'for package in ["altair", "plotly", "pandas", "pyarrow"]:',
+          'for package in ["altair", "chart_studio", "pandas", "pyarrow"]:',
           '    tmp_ret = collect_all(package)',
           '    datas += tmp_ret[0]',
           '    binaries += tmp_ret[1]',
@@ -81,7 +77,7 @@ jobs:
           '    hookspath=[],',
           '    hooksconfig={},',
           '    runtime_hooks=[],',
-          '    excludes=[],',
+          '    excludes=["pandas.tests", "pyarrow.tests"],',
           '    win_no_prefer_redirects=False,',
           '    win_private_assemblies=False,',
           '    cipher=block_cipher,',
@@ -112,14 +108,13 @@ jobs:
           '    entitlements_file=None,',
           ')'
         )
-        
-        # Write the content to the file
+
         Add-Content -Path 'SalesDashboard.spec' -Value $specContent -Encoding UTF8
-    
+
     - name: Build executable with PyInstaller
       run: |
         pyinstaller --clean SalesDashboard.spec
-    
+
     - name: Upload executable as artifact
       uses: actions/upload-artifact@v4
       with:
