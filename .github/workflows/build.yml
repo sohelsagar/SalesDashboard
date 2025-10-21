@@ -26,6 +26,9 @@ jobs:
     
     # ----------------------------------------------------------------------
     # FIX: Writing the .spec file using PowerShell Here-String for reliability
+    # The YAML syntax error is likely due to inconsistent indentation 
+    # within the 'run: |' block or a conflict with the '@"' operator.
+    # Cleaning the indentation below should resolve it.
     # ----------------------------------------------------------------------
     - name: Create PyInstaller spec file
       # The `run` block uses PowerShell's Here-String (`@"`...`"@) to reliably
