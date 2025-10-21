@@ -24,7 +24,7 @@ jobs:
     
     # ----------------------------------------------------------------------
     # FIX: This step now builds the .spec file line-by-line to avoid
-    # YAML parsing errors and uses the correct PyInstaller 6.x import path.
+    # YAML parsing errors and uses the correct, explicit PyInstaller 6.x import path.
     # ----------------------------------------------------------------------
     - name: Create PyInstaller spec file
       run: |
@@ -37,7 +37,7 @@ jobs:
           'import sys',
           'from PyInstaller.utils.hooks import collect_all, collect_submodules',
           # --- THIS IS THE CORRECTED LINE ---
-          'from PyInstaller import Analysis',
+          'from PyInstaller.building.build_main import Analysis',
           'from PyInstaller.utils.collect import PYZ',
           'from PyInstaller.utils.collect import EXE',
           'block_cipher = None',
