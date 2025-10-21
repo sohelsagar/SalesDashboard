@@ -37,9 +37,7 @@ jobs:
           'import sys',
           'from PyInstaller.utils.hooks import collect_all, collect_submodules',
           # --- THIS IS THE CORRECTED LINE ---
-          'from PyInstaller.building.build_main import Analysis',
-          'from PyInstaller.utils.collect import PYZ',
-          'from PyInstaller.utils.collect import EXE',
+          'from PyInstaller.building.build_main import Analysis, PYZ, EXE',
           'block_cipher = None',
           '',
           'datas = [("shapefiles", "shapefiles")]',
